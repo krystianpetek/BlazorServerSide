@@ -1,0 +1,47 @@
+﻿@page "/"
+
+<PageTitle>WSK - wszystkie roczniki</PageTitle>
+
+@using BlazorServerSide.Models
+@using BlazorServerSide.Services
+@inject WSKServices wskServices
+
+<h1>WSK - lista numerów</h1>
+
+@if (wskInfo == null)
+{
+    <p><em>Brak danych...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rok produkcji</th>
+                <th>Nr ramy</th>
+                <th>Nr silnika</th>
+            </tr>
+        </thead>
+        <tbody>
+                @{
+                    foreach(var item in wskInfo)
+                    {
+                        <tr>
+                        <td>@item.ProductionYearDate</td>
+                        <td>@item.FrameNumberFrom - @item.FrameNumberTo</td>
+                        <td>@item.EngineNumberFrom - @item.EngineNumberTo</td>
+                        </tr>
+                    }
+                }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WSK[]? wskInfo;
+
+    protected override async Task OnInitializedAsync()
+    {
+        wskInfo = wskServices.GetAll();
+    }
+}

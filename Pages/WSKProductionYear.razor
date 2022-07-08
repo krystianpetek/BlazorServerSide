@@ -1,0 +1,64 @@
+﻿@page "/WSKProductionYear"
+
+<PageTitle>WSK rok produkcji</PageTitle>
+
+@using BlazorServerSide.Models
+@using BlazorServerSide.Services
+@inject WSKServices wskServices
+
+<h1>WSK pokaż według roku produkcji</h1>
+
+<br>
+<label for="cars">Wybierz rocznik: </label>
+
+<select onchange=@DoStuff>
+    <option></option>
+    @foreach(var item in year)
+        {    
+            <option value="@item">@item</option>
+        }
+</select>
+<br />
+<br />
+@if(wsksInfo == null)
+{
+    
+}
+else
+{
+    foreach(var wsk in wsksInfo){
+<div>
+    <p>Rok produkcji - @wsk.ProductionYearDate</p>
+    <p>Nr ramy - (@wsk.FrameNumberFrom - @wsk.FrameNumberTo)</p>
+    <p>Nr silnika - (@wsk.EngineNumberFrom - @wsk.EngineNumberTo)</p>
+    
+            @if (wsksInfo.Count() > 1)
+            {
+                <p>Lokalizacja - @wsk.Localization</p>
+            }
+        <br/>
+        </div>
+    }
+
+}
+
+@code {
+    private IEnumerable<WSK?> wsksInfo;
+    private List<int> year;
+
+    protected override async Task OnInitializedAsync()
+    {
+        year = wskServices.GetYear();
+    }
+}
+@functions{
+    void DoStuff(ChangeEventArgs e)
+    {
+        try {
+            wsksInfo = wskServices.GetInfo(int.Parse(e.Value.ToString()));
+        }
+        catch(FormatException ex)
+        {
+        }
+    }
+}
